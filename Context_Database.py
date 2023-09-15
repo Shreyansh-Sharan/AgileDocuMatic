@@ -12,8 +12,9 @@ PINECONE_ENVIRONMENT = "gcp-starter"                                            
 def context_db_read_query( index, data, number_of_result, value_required = False ): # Read the parameters based on the openAI chat request and provide the Top 3 results. 
 
     # return data will have the vector data and top N results, Optionally: include_values (Type: Boolean) will provide the vector as well which is not required in our case
-    return_data = index.query( vector = data,           # data = imput provided by the user for current Query
-                               top_k = 3,               # value returned based on top_n value 
+    
+    return_data = index.query( vector = data,                                       # data = imput provided by the user for current Query
+                               top_k = 3,                                           # value returned based on top_n value 
                                include_values = True )
     
     print( "index query",index.query( vector=data, top_k=3, include_values=True ))
@@ -21,17 +22,20 @@ def context_db_read_query( index, data, number_of_result, value_required = False
 
 
 
+# Write the data into the Vector Database
 
-def context_db_write_query(index_name, embed_model, index_Obj):
+def context_db_write_query(index_name, embed_model, index_Obj):              # Parameter 1: Will require the Project Name of the Context Database, Parameter 2:Wil Require the model type, Parameter 3: will require the instance of the object 
+    
     user_input = [  "This will considered as second batch of the input",
                     "document of previous user will be provided if top_k is within 3 units "  ]
     
     data = []
-    length = len(embedding['data'][0]['embedding'])
-    data = embedding['data'][0]['embedding']
-    
-    embedding = openai.Embedding.create(input= user_input,
+    length = len(embedding['data'][0]['embedding'])                         # This will determine the total number of dimension (Axis) of Vector
+    embedding = openai.Embedding.create(input= user_input,                  # This will be used to return the object from Vector Database
                                         engine=embed_model
+    data = embedding['data'][0]['embedding']                                # This will provide a list of the vector of the query
+    
+    
 )
     if index_name not in pinecone.list_indexes():
         print("Creating pinecone index:" + index_name)
